@@ -1,6 +1,5 @@
 package com.example.myapplication.view.restaurante.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +26,7 @@ class RestauranteAdapter(var list : ArrayList<Restaurante>) : RecyclerView.Adapt
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val itemView =LayoutInflater.from(parent.context).inflate(R.layout.model_item_list_restaurante, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.model_item_list_restaurante, parent, false)
         return ViewHolder(itemView)
     }
 
