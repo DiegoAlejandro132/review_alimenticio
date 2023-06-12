@@ -21,7 +21,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:textSize="18dp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:text="NOME"/>
@@ -31,6 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/label_nota"
+                android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_below="@+id/txt_nome_review"/>
 
@@ -38,6 +39,7 @@
                 android:id="@+id/label_nota"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="16sp"
                 android:layout_below="@+id/txt_nome_review"
                 android:text="Nota: "/>
 
@@ -46,6 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txt_nota"
+                android:textSize="16sp"
                 android:layout_toRightOf="@+id/label_localizacao"
                 android:textColor="@color/black" />
 
@@ -53,6 +56,7 @@
                 android:id="@+id/label_localizacao"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="16sp"
                 android:layout_below="@+id/label_nota"
                 android:text="Localização: "/>
 
@@ -60,6 +64,7 @@
                 android:id="@+id/label_restaurante"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="16sp"
                 android:layout_below="@+id/label_localizacao"
                 android:text="Restaurante: "/>
 
@@ -67,6 +72,7 @@
                 android:id="@+id/txt_restaurante"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="16sp"
                 android:layout_below="@+id/label_localizacao"
                 android:textColor="@color/black"
                 android:layout_toRightOf="@+id/label_restaurante"/>
@@ -75,6 +81,7 @@
                 android:id="@+id/label_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="16sp"
                 android:layout_below="@+id/label_restaurante"
                 android:text="Data: "/>
 
