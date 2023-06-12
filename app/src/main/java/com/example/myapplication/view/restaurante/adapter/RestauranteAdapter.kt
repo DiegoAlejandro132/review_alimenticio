@@ -33,7 +33,6 @@ class RestauranteAdapter(var list : ArrayList<Restaurante>) : RecyclerView.Adapt
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.nome.text = list[position].nome
         holder.nota.text = list[position].nota.toString()
-        holder.localizacao.text = list[position].localizacao
     }
 
     inner class ViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView){
