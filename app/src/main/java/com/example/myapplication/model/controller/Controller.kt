@@ -7,11 +7,12 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.myapplication.model.model.Restaurante
+import com.example.myapplication.model.model.Review
 
 class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, null, DATABASEVERSION) {
 
     companion object{
-        private const val DATABASEVERSION = 1
+        private const val DATABASEVERSION = 2
         private const val DATABASENAME = "reviewDB.db"
         private const val TBLRESTAURANTE = "tbl_restaurante"
         private const val TBLREVIEW = "tbl_review"
@@ -29,8 +30,10 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         val createTabelaReview =("CREATE TABLE IF NOT EXISTS $TBLREVIEW" +
                                 "(" +
                                 "   id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                                "   data TEXT, " +
+                                "   data INTEGER, " +
                                 "   id_restaurante INTEGER, " +
+                                "   localizacao TEXT, " +
+                                "   comentario TEXT" +
                                 "   nota REAL" +
                                 ")")
 
@@ -118,4 +121,85 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         db.close()
         return sucesso
     }
+
+
+    /////////////////////////////// REVIEW /////////////////////////////////
+
+    fun createReview(review: Review): Long {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+
+        contentValues.put("data", review.data.toString())
+        contentValues.put("id_restaurante", review.idRestaurante)
+        contentValues.put("localizacao", review.localizacao)
+        contentValues.put("nota", review.nota)
+        contentValues.put("comentario", review.comentario)
+
+        val sucesso = db.insert(TBLREVIEW, null, contentValues)
+        db.close()
+        return sucesso
+    }
+
+    @SuppressLint("Range")
+    fun getReview(): ArrayList<Review> {
+        val db = this.writableDatabase
+        val list = ArrayList<Review>()
+        val sql = ("SELECT * FROM $TBLREVIEW")
+
+        val cursor: Cursor?
+
+        try {
+            cursor = db.rawQuery(sql, null)
+        }catch (e:Exception){
+            e.printStackTrace()
+            return list
+        }
+
+        var id : Int
+        var comentario: String
+        var nota : Double
+        var localizacao : String
+        var idRestaurante : Int
+        var data : Long
+
+        if(cursor.moveToFirst()){
+            do {
+                id = cursor.getInt(cursor.getColumnIndex("id"))
+                comentario = cursor.getString(cursor.getColumnIndex("comentario"))
+                nota = cursor.getDouble(cursor.getColumnIndex("nota"))
+                localizacao = cursor.getString(cursor.getColumnIndex("localizacao"))
+                idRestaurante = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
+                data = cursor.getLong(cursor.getColumnIndex("data"))
+
+                val review = Review(id, data, idRestaurante, localizacao, nota, comentario)
+                list.add(review)
+            }while (cursor.moveToNext())
+        }
+        return list
+    }
+
+    fun removeReview(id: Int): Int{
+        val db = this.writableDatabase
+
+        val sucesso = db.delete(TBLREVIEW, "id = $id", null)
+        db.close()
+
+        return sucesso
+    }
+
+    fun updateReview(review: Review): Int {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+
+        contentValues.put("data", review.data.toString())
+        contentValues.put("id_restaurante", review.idRestaurante)
+        contentValues.put("localizacao", review.localizacao)
+        contentValues.put("nota", review.nota)
+        contentValues.put("comentario", review.comentario)
+
+        val sucesso = db.update(TBLREVIEW, contentValues, "id = ${review.id}", null)
+        db.close()
+        return sucesso
+    }
+
 }
