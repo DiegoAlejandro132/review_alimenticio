@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.model.model.Restaurante
@@ -15,6 +16,7 @@ class RestauranteAdapter(var list : ArrayList<Restaurante>) : RecyclerView.Adapt
 
     interface OnItemClickListenerRestaurante{
         fun editarRestaurante(position: Int)
+        fun removerRestaurante(position: Int)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListenerRestaurante){
@@ -39,11 +41,16 @@ class RestauranteAdapter(var list : ArrayList<Restaurante>) : RecyclerView.Adapt
         val nome = itemView.findViewById<TextView>(R.id.txt_nome)
         val nota = itemView.findViewById<TextView>(R.id.txt_nota)
         val localizacao = itemView.findViewById<TextView>(R.id.txt_localizacao)
-        val editar = itemView.findViewById<ImageButton>(R.id.btn_editar_restaurante)
+        val excluir = itemView.findViewById<ImageButton>(R.id.btn_remover_restaurante)
+        val card = itemView.findViewById<CardView>(R.id.card_restaurante)
 
         init {
-            editar.setOnClickListener {
+            card.setOnClickListener {
                 listener.editarRestaurante(adapterPosition)
+            }
+
+            excluir.setOnClickListener {
+                listener.removerRestaurante(adapterPosition)
             }
         }
     }

@@ -60,6 +60,34 @@ class RestauranteActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun dialogRemoverRestaurante(restaurante: Restaurante?){
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_remover_restaurante)
+
+        val texto = dialog.findViewById<TextView>(R.id.label_remover_restaurante)
+        val btnDeletar = dialog.findViewById<Button>(R.id.btn_remover_restaurante)
+        val btnFecharDialog = dialog.findViewById<ImageButton>(R.id.btn_fechar_dialog)
+
+        texto.text = "${texto.text} \n${restaurante?.nome?.toUpperCase()}?"
+
+        btnDeletar.setOnClickListener {
+            val deletou = restauranteService.removeRestaurante(restaurante!!.id!!)
+            if(deletou > 0){
+                setRecyclerRestaurantes()
+            }else{
+                Toast.makeText(this, "Houve um erro ao remover o restaurante. Tente mais tarde", Toast.LENGTH_LONG).show()
+            }
+            dialog.dismiss()
+        }
+
+        btnFecharDialog.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
     private fun setRecyclerRestaurantes(){
         restauranteList = restauranteService.getRestaurante()
         val recycler = binding.recyclerRestaurantes
@@ -70,6 +98,10 @@ class RestauranteActivity : AppCompatActivity() {
         restaurantesAdapter.setOnItemClickListener(object : RestauranteAdapter.OnItemClickListenerRestaurante{
             override fun editarRestaurante(position: Int) {
                 dialogRestaurante(restauranteList[position], position)
+            }
+
+            override fun removerRestaurante(position: Int) {
+                dialogRemoverRestaurante(restauranteList[position])
             }
 
         })
@@ -101,5 +133,8 @@ class RestauranteActivity : AppCompatActivity() {
         dialog.dismiss()
     }
 
+    private fun removerRestaurante(id: Int){
+        restauranteService.removeRestaurante(id)
+    }
 
 }
