@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:textSize="18dp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:text="NOME"/>
@@ -29,6 +29,7 @@
                 android:id="@+id/txt_nota"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="16sp"
                 android:layout_toRightOf="@+id/label_nota"
                 android:textColor="@color/black"
                 android:layout_below="@+id/txt_nome"/>
@@ -37,6 +38,7 @@
                 android:id="@+id/label_nota"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="16sp"
                 android:layout_below="@+id/txt_nome"
                 android:text="Nota: "/>
 
@@ -44,6 +46,7 @@
                 android:id="@+id/txt_localizacao"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="16sp"
                 android:layout_below="@+id/txt_nota"
                 android:layout_toRightOf="@+id/label_localizacao"
                 android:textColor="@color/black" />
@@ -53,6 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/label_nota"
+                android:textSize="16dp"
                 android:text="Localização: "/>
 
             <ImageButton
