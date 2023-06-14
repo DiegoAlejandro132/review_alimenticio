@@ -5,7 +5,10 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
+import com.example.myapplication.model.dataClass.MediaNotas
 import com.example.myapplication.model.model.Restaurante
 import com.example.myapplication.model.model.Review
 
@@ -101,6 +104,61 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
             }while (cursor.moveToNext())
         }
         return list
+    }
+
+    @SuppressLint("Range")
+    fun getRestauranteById(id: Int) : Restaurante?{
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $TBLRESTAURANTE WHERE id = ?"
+        val valores = arrayOf(id.toString())
+        val cursor: Cursor?
+        var restaurante: Restaurante? = null
+
+        try {
+            cursor = db.rawQuery(query, valores)
+
+            if (cursor.moveToFirst()) {
+                val id = cursor.getInt(cursor.getColumnIndex("id"))
+                val nome = cursor.getString(cursor.getColumnIndex("nome"))
+                val nota = cursor.getDouble(cursor.getColumnIndex("nota"))
+                restaurante = Restaurante(id, nome, nota)
+            }
+
+            cursor?.close()
+        } catch (e: SQLiteException) {
+            e.printStackTrace()
+        } finally {
+            db.close()
+        }
+
+        return restaurante
+    }
+
+    @SuppressLint("Range")
+    fun getMediaAtualByRestaurante(id : Int) : MediaNotas {
+        val db = this.writableDatabase
+        val query = "SELECT sum(nota) as total_notas, count(*) as qtd_notas FROM $TBLREVIEW WHERE id_restaurante = ?"
+        val valores = arrayOf(id.toString())
+        val cursor: Cursor?
+        var totalNotas = 0
+        var qtdNotas = 0
+
+        try {
+            cursor = db.rawQuery(query, valores)
+
+            if (cursor.moveToFirst()) {
+                totalNotas = cursor.getInt(cursor.getColumnIndex("total_notas"))
+                qtdNotas = cursor.getInt(cursor.getColumnIndex("qtd_notas"))
+            }
+            cursor?.close()
+        } catch (e: SQLiteException) {
+            e.printStackTrace()
+        } finally {
+            db.close()
+        }
+        Log.d("msgg ", totalNotas.toString())
+        Log.d("msgg ", qtdNotas.toString())
+        return MediaNotas(totalNotas, qtdNotas)
     }
 
     fun removeRestaurante(id: Int): Int{

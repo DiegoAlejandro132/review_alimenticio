@@ -1,5 +1,6 @@
 package com.example.myapplication.util
 
+import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -28,5 +29,10 @@ class Util {
         val data = getDataFromLong(long)
         val hora = getHoraFromLong(long)
         return "$data - $hora"
+    }
+
+    fun formatarDouble(value: Double): String {
+        val decimalFormat = DecimalFormat("#.00")
+        return decimalFormat.format(value)
     }
 }
