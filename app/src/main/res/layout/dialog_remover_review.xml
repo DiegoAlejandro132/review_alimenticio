@@ -14,7 +14,7 @@
         android:background="@android:color/transparent"/>
 
     <ImageView
-        android:id="@+id/img_deletar_restaurante"
+        android:id="@+id/img_deletar_review"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_alignParentTop="true"
@@ -23,23 +23,23 @@
         android:src="@drawable/delete" />
 
     <TextView
-        android:id="@+id/label_remover_restaurante"
+        android:id="@+id/label_remover_review"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/img_deletar_restaurante"
-        android:text="DESEJA EXCLUIR O RESTAURANTE"
+        android:layout_below="@+id/img_deletar_review"
+        android:text="DESEJA EXCLUIR O REVIEW?"
         android:textColor="@color/black"
         android:textStyle="bold"/>
 
     <Button
-        android:id="@+id/btn_remover_restaurante"
+        android:id="@+id/btn_remover_review"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
-        android:layout_below="@+id/label_remover_restaurante"
+        android:layout_below="@+id/label_remover_review"
         android:text="EXCLUIR"/>
 
 </RelativeLayout>
