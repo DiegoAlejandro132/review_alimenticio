@@ -9,6 +9,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.model.model.Restaurante
+import com.example.myapplication.util.Util
 
 class RestauranteAdapter(var list : ArrayList<Restaurante>) : RecyclerView.Adapter<RestauranteAdapter.ViewHolder>(){
 
@@ -33,14 +34,13 @@ class RestauranteAdapter(var list : ArrayList<Restaurante>) : RecyclerView.Adapt
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.nome.text = list[position].nome
-        holder.nota.text = list[position].nota.toString()
+        holder.nome.text = if(list[position].nome == "") "Sem nome" else list[position].nome
+        holder.nota.text = Util().formatarDouble(list[position].nota)
     }
 
     inner class ViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView){
         val nome = itemView.findViewById<TextView>(R.id.txt_nome)
         val nota = itemView.findViewById<TextView>(R.id.txt_nota)
-        val localizacao = itemView.findViewById<TextView>(R.id.txt_localizacao)
         val excluir = itemView.findViewById<ImageButton>(R.id.btn_remover_restaurante)
         val card = itemView.findViewById<CardView>(R.id.card_restaurante)
 

@@ -13,4 +13,10 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="editTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/background_edit_text</item>
+    </style>
+    <style name="spinnerStyle" parent="Widget.AppCompat.Spinner">
+        <item name="android:background">@drawable/background_edit_text</item>
+    </style>
 </resources>

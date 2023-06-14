@@ -3,7 +3,6 @@ package com.example.myapplication.view.restaurante
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Window
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,7 +11,6 @@ import com.example.myapplication.databinding.ActivityRestauranteBinding
 import com.example.myapplication.model.model.Restaurante
 import com.example.myapplication.service.RestauranteService
 import com.example.myapplication.view.restaurante.adapter.RestauranteAdapter
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class RestauranteActivity : AppCompatActivity() {
 
@@ -109,8 +107,7 @@ class RestauranteActivity : AppCompatActivity() {
 
     private fun criarRestaurante(dialog: Dialog){
         val nome = dialog.findViewById<EditText>(R.id.txt_nome)
-        val nota = 4.5
-        val restaurante = Restaurante(nome = nome.text.toString(), nota = nota)
+        val restaurante = Restaurante(nome = nome.text.toString(), nota = 0.0)
         val criou = restauranteService.createRestaurante(restaurante)
         if(criou > 0){
             setRecyclerRestaurantes()

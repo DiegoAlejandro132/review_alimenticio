@@ -5,13 +5,17 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
+import com.example.myapplication.model.dataClass.MediaNotas
 import com.example.myapplication.model.model.Restaurante
+import com.example.myapplication.model.model.Review
 
 class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, null, DATABASEVERSION) {
 
     companion object{
-        private const val DATABASEVERSION = 1
+        private const val DATABASEVERSION = 5
         private const val DATABASENAME = "reviewDB.db"
         private const val TBLRESTAURANTE = "tbl_restaurante"
         private const val TBLREVIEW = "tbl_review"
@@ -29,9 +33,13 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         val createTabelaReview =("CREATE TABLE IF NOT EXISTS $TBLREVIEW" +
                                 "(" +
                                 "   id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                                "   data TEXT, " +
+                                "   data INTEGER, " +
                                 "   id_restaurante INTEGER, " +
-                                "   nota REAL" +
+                                "   latitude REAL, " +
+                                "   longitude REAL, " +
+                                "   comentario TEXT, " +
+                                "   nota REAL, " +
+                                "   nome TEXT" +
                                 ")")
 
         val createTabelaImagem =("CREATE TABLE IF NOT EXISTS $TBLIMAGEM" +
@@ -98,6 +106,61 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         return list
     }
 
+    @SuppressLint("Range")
+    fun getRestauranteById(id: Int) : Restaurante?{
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $TBLRESTAURANTE WHERE id = ?"
+        val valores = arrayOf(id.toString())
+        val cursor: Cursor?
+        var restaurante: Restaurante? = null
+
+        try {
+            cursor = db.rawQuery(query, valores)
+
+            if (cursor.moveToFirst()) {
+                val id = cursor.getInt(cursor.getColumnIndex("id"))
+                val nome = cursor.getString(cursor.getColumnIndex("nome"))
+                val nota = cursor.getDouble(cursor.getColumnIndex("nota"))
+                restaurante = Restaurante(id, nome, nota)
+            }
+
+            cursor?.close()
+        } catch (e: SQLiteException) {
+            e.printStackTrace()
+        } finally {
+            db.close()
+        }
+
+        return restaurante
+    }
+
+    @SuppressLint("Range")
+    fun getMediaAtualByRestaurante(id : Int) : MediaNotas {
+        val db = this.writableDatabase
+        val query = "SELECT sum(nota) as total_notas, count(*) as qtd_notas FROM $TBLREVIEW WHERE id_restaurante = ?"
+        val valores = arrayOf(id.toString())
+        val cursor: Cursor?
+        var totalNotas = 0
+        var qtdNotas = 0
+
+        try {
+            cursor = db.rawQuery(query, valores)
+
+            if (cursor.moveToFirst()) {
+                totalNotas = cursor.getInt(cursor.getColumnIndex("total_notas"))
+                qtdNotas = cursor.getInt(cursor.getColumnIndex("qtd_notas"))
+            }
+            cursor?.close()
+        } catch (e: SQLiteException) {
+            e.printStackTrace()
+        } finally {
+            db.close()
+        }
+        Log.d("msgg ", totalNotas.toString())
+        Log.d("msgg ", qtdNotas.toString())
+        return MediaNotas(totalNotas, qtdNotas)
+    }
+
     fun removeRestaurante(id: Int): Int{
         val db = this.writableDatabase
 
@@ -118,4 +181,93 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         db.close()
         return sucesso
     }
+
+
+    /////////////////////////////// REVIEW /////////////////////////////////
+
+    fun createReview(review: Review): Long {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+
+        contentValues.put("data", review.data.toString())
+        contentValues.put("id_restaurante", review.idRestaurante)
+        contentValues.put("latitude", review.latitude)
+        contentValues.put("longitude", review.longitude)
+        contentValues.put("nota", review.nota)
+        contentValues.put("comentario", review.comentario)
+        contentValues.put("nome", review.nome)
+
+        val sucesso = db.insert(TBLREVIEW, null, contentValues)
+        db.close()
+        return sucesso
+    }
+
+    @SuppressLint("Range")
+    fun getReview(): ArrayList<Review> {
+        val db = this.writableDatabase
+        val list = ArrayList<Review>()
+        val sql = ("SELECT * FROM $TBLREVIEW")
+
+        val cursor: Cursor?
+
+        try {
+            cursor = db.rawQuery(sql, null)
+        }catch (e:Exception){
+            e.printStackTrace()
+            return list
+        }
+
+        var id : Int
+        var comentario: String
+        var nota : Float
+        var latitude : Double
+        var longitude : Double
+        var idRestaurante : Int
+        var data : Long
+        var nome : String
+
+        if(cursor.moveToFirst()){
+            do {
+                id = cursor.getInt(cursor.getColumnIndex("id"))
+                comentario = cursor.getString(cursor.getColumnIndex("comentario"))
+                nota = cursor.getFloat(cursor.getColumnIndex("nota"))
+                latitude = cursor.getDouble(cursor.getColumnIndex("latitude"))
+                longitude = cursor.getDouble(cursor.getColumnIndex("longitude"))
+                idRestaurante = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
+                data = cursor.getLong(cursor.getColumnIndex("data"))
+                nome = cursor.getString(cursor.getColumnIndex("nome"))
+
+                val review = Review(id, data, idRestaurante, latitude, longitude, nota, comentario, nome)
+                list.add(review)
+            }while (cursor.moveToNext())
+        }
+        return list
+    }
+
+    fun removeReview(id: Int): Int{
+        val db = this.writableDatabase
+
+        val sucesso = db.delete(TBLREVIEW, "id = $id", null)
+        db.close()
+
+        return sucesso
+    }
+
+    fun updateReview(review: Review): Int {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+
+        contentValues.put("data", review.data.toString())
+        contentValues.put("id_restaurante", review.idRestaurante)
+        contentValues.put("latitude", review.latitude)
+        contentValues.put("longitude", review.longitude)
+        contentValues.put("nota", review.nota)
+        contentValues.put("comentario", review.comentario)
+        contentValues.put("nome", review.nome)
+
+        val sucesso = db.update(TBLREVIEW, contentValues, "id = ${review.id}", null)
+        db.close()
+        return sucesso
+    }
+
 }

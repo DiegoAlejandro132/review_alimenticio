@@ -33,18 +33,42 @@
             android:text="CRIAR FEEDBACK"/>
 
         <TextView
+            android:id="@+id/label_nome_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_below="@+id/label_criar_feedback"
+            android:layout_centerHorizontal="true"
+            android:text="Qual o nome da comida?"
+            android:textColor="@color/black"/>
+
+        <EditText
+            android:id="@+id/txt_nome_review"
+            style="@style/editTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:padding="8dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_below="@+id/label_nome_review" />
+
+        <TextView
             android:id="@+id/label_comentario_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/label_criar_feedback"
+            android:layout_below="@+id/txt_nome_review"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
-            android:text="Adicione um comentario"/>
+            android:text="Adicione um comentario"
+            android:textColor="@color/black"/>
 
         <EditText
             android:id="@+id/txt_comentario_review"
+            style="@style/editTextStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="120dp"
+            android:padding="8dp"
             android:layout_below="@id/label_comentario_review"
             android:layout_centerHorizontal="true"
             android:layout_marginStart="15dp"
@@ -58,12 +82,16 @@
             android:layout_marginTop="30dp"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/txt_comentario_review"
-            android:text="Adicione uma nota"/>
+            android:text="Adicione uma nota"
+            android:textColor="@color/black"/>
 
         <RatingBar
-            android:id="@+id/rating"
+            android:id="@+id/rating_nota_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:progressTint="#ffe20a"
+            android:progressBackgroundTintMode="multiply"
+            android:secondaryProgressTintMode="multiply"
             android:layout_marginTop="10dp"
             android:numStars="5"
             android:layout_below="@+id/label_adicionar_nota_review"
@@ -75,13 +103,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/rating"
-            android:text="Selecione um restaurante cadastrado"/>
+            android:layout_below="@+id/rating_nota_review"
+            android:text="Selecione um restaurante cadastrado"
+            android:textColor="@color/black"/>
 
         <Spinner
             android:id="@+id/spn_restaurantes_cadastrados"
+            style="@style/spinnerStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
             android:layout_marginTop="10dp"
@@ -94,7 +124,8 @@
             android:layout_marginTop="30dp"
             android:layout_below="@+id/spn_restaurantes_cadastrados"
             android:layout_centerHorizontal="true"
-            android:text="Adicionar fotos"/>
+            android:text="Adicionar fotos"
+            android:textColor="@color/black"/>
 
         <LinearLayout
             android:id="@+id/layout_botoes_foto"
@@ -123,6 +154,7 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/btn_criar_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
