@@ -30,9 +30,10 @@ class ReviewAdapter(var list: ArrayList<Review>): RecyclerView.Adapter<ReviewAda
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.nome.text = list[position].nome
+        holder.nome.text = if(list[position].nome == "") "Sem nome" else list[position].nome
         holder.data.text = Util().getDataHoraFromLong(list[position].data)
         holder.nota.text = list[position].nota.toString()
+        holder.localizacao.text = list[position].latitude.toString()
     }
 
     override fun getItemCount(): Int {
@@ -46,7 +47,6 @@ class ReviewAdapter(var list: ArrayList<Review>): RecyclerView.Adapter<ReviewAda
         var restaurante = itemView.findViewById<TextView>(R.id.txt_restaurante)
         var data = itemView.findViewById<TextView>(R.id.txt_data)
         var btnRemover = itemView.findViewById<ImageButton>(R.id.btn_remover_review)
-        //var card =
 
         init {
             btnRemover.setOnClickListener {

@@ -12,7 +12,7 @@ import com.example.myapplication.model.model.Review
 class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, null, DATABASEVERSION) {
 
     companion object{
-        private const val DATABASEVERSION = 4
+        private const val DATABASEVERSION = 5
         private const val DATABASENAME = "reviewDB.db"
         private const val TBLRESTAURANTE = "tbl_restaurante"
         private const val TBLREVIEW = "tbl_review"
@@ -32,7 +32,8 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
                                 "   id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                                 "   data INTEGER, " +
                                 "   id_restaurante INTEGER, " +
-                                "   localizacao TEXT, " +
+                                "   latitude REAL, " +
+                                "   longitude REAL, " +
                                 "   comentario TEXT, " +
                                 "   nota REAL, " +
                                 "   nome TEXT" +
@@ -132,7 +133,8 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
 
         contentValues.put("data", review.data.toString())
         contentValues.put("id_restaurante", review.idRestaurante)
-        contentValues.put("localizacao", review.localizacao)
+        contentValues.put("latitude", review.latitude)
+        contentValues.put("longitude", review.longitude)
         contentValues.put("nota", review.nota)
         contentValues.put("comentario", review.comentario)
         contentValues.put("nome", review.nome)
@@ -160,7 +162,8 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         var id : Int
         var comentario: String
         var nota : Float
-        var localizacao : String
+        var latitude : Double
+        var longitude : Double
         var idRestaurante : Int
         var data : Long
         var nome : String
@@ -170,12 +173,13 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
                 id = cursor.getInt(cursor.getColumnIndex("id"))
                 comentario = cursor.getString(cursor.getColumnIndex("comentario"))
                 nota = cursor.getFloat(cursor.getColumnIndex("nota"))
-                localizacao = cursor.getString(cursor.getColumnIndex("localizacao"))
+                latitude = cursor.getDouble(cursor.getColumnIndex("latitude"))
+                longitude = cursor.getDouble(cursor.getColumnIndex("longitude"))
                 idRestaurante = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
                 data = cursor.getLong(cursor.getColumnIndex("data"))
                 nome = cursor.getString(cursor.getColumnIndex("nome"))
 
-                val review = Review(id, data, idRestaurante, localizacao, nota, comentario, nome)
+                val review = Review(id, data, idRestaurante, latitude, longitude, nota, comentario, nome)
                 list.add(review)
             }while (cursor.moveToNext())
         }
@@ -197,7 +201,8 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
 
         contentValues.put("data", review.data.toString())
         contentValues.put("id_restaurante", review.idRestaurante)
-        contentValues.put("localizacao", review.localizacao)
+        contentValues.put("latitude", review.latitude)
+        contentValues.put("longitude", review.longitude)
         contentValues.put("nota", review.nota)
         contentValues.put("comentario", review.comentario)
         contentValues.put("nome", review.nome)

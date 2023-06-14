@@ -11,25 +11,40 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentCriarReviewBinding
 import com.example.myapplication.model.model.Restaurante
 import com.example.myapplication.model.model.Review
 import com.example.myapplication.service.ReviewService
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 
 class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Restaurante>) : Fragment(R.layout.fragment_criar_review) {
 
     private lateinit var binding : FragmentCriarReviewBinding
     private val reviewService = ReviewService(contexto)
+    //acesso a midia
     private val PERMISSION_CAMERA = 1
     private val PERMISSION_GALLERY = 2
     private val REQUEST_IMAGE_CAPTURE = 3
     private val REQUEST_IMAGE_PICK = 4
+
     private var restauranteSelecionado : Restaurante? = null
+    //acesso a localizacao
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1001
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var latitude : Double = 0.0
+    private var longitude : Double = 0.0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(contexto)
+        vereificaPermissaoLocalizacao()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentCriarReviewBinding.bind(view)
@@ -40,7 +55,7 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
 
     private fun setClickListeners(){
         binding.btnFecharFragmentCriarReview.setOnClickListener {
-            fehcarFragment()
+            fecharFragment()
         }
 
         binding.btnAdicionarFotoCamera.setOnClickListener {
@@ -52,11 +67,11 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
         }
 
         binding.btnCriarReview.setOnClickListener {
-            criarReview()
+            getUltimaLocalizacao()
         }
     }
 
-    private fun fehcarFragment(){
+    private fun fecharFragment(){
         parentFragmentManager.popBackStack()
     }
 
@@ -102,12 +117,13 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
         val nome = binding.txtNomeReview.text
 
         val review = Review(data = dataAtual, nota = nota, comentario = comentario.toString(),
-            idRestaurante = idRestaurante, localizacao = "", nome = nome.toString()
+            idRestaurante = idRestaurante, latitude = latitude, longitude = longitude, nome = nome.toString()
         )
 
         val criou = reviewService.createReview(review)
         if(criou > 0){
-            Toast.makeText(contexto, "Review criado com sucesso", Toast.LENGTH_SHORT).show()
+            Toast.makeText(contexto, "Review criado com sucesso. Deslize para baixo para atualizar", Toast.LENGTH_SHORT).show()
+            fecharFragment()
         }else{
             Toast.makeText(contexto, "Não foi possível criar o review. Tente mais tarde", Toast.LENGTH_SHORT).show()
         }
@@ -140,6 +156,35 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
                 TODO("Not yet implemented")
             }
 
+        }
+    }
+
+    fun getUltimaLocalizacao() {
+        fusedLocationClient.lastLocation.addOnSuccessListener { location->
+            if (location != null) {
+                latitude = location.latitude
+                longitude = location.longitude
+            }
+            criarReview()
+        }.addOnFailureListener {
+            criarReview()
+        }
+    }
+
+    private fun vereificaPermissaoLocalizacao(){
+        if (ActivityCompat.checkSelfPermission(
+                contexto,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                contexto,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
         }
     }
 

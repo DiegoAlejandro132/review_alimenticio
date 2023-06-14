@@ -33,14 +33,13 @@ class RestauranteAdapter(var list : ArrayList<Restaurante>) : RecyclerView.Adapt
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.nome.text = list[position].nome
+        holder.nome.text = if(list[position].nome == "") "Sem nome" else list[position].nome
         holder.nota.text = list[position].nota.toString()
     }
 
     inner class ViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView){
         val nome = itemView.findViewById<TextView>(R.id.txt_nome)
         val nota = itemView.findViewById<TextView>(R.id.txt_nota)
-        val localizacao = itemView.findViewById<TextView>(R.id.txt_localizacao)
         val excluir = itemView.findViewById<ImageButton>(R.id.btn_remover_restaurante)
         val card = itemView.findViewById<CardView>(R.id.card_restaurante)
 
