@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.example.myapplication.model.dataClass.MediaNotas
+import com.example.myapplication.model.model.Imagem
 import com.example.myapplication.model.model.Restaurante
 import com.example.myapplication.model.model.Review
 
@@ -244,6 +245,30 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         return list
     }
 
+    @SuppressLint("Range")
+    fun getMaiorId() : Int{
+        val db = this.readableDatabase
+        val sql = "SELECT MAX(id) as id FROM $TBLREVIEW"
+        var cursor : Cursor? = null
+        var id : Int = 0
+
+        try{
+            cursor = db.rawQuery(sql, null)
+
+            if(cursor.moveToFirst()){
+                do {
+                    id = cursor.getInt(cursor.getColumnIndex("id"))
+                }while (cursor.moveToNext())
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }finally {
+            db.close()
+        }
+
+        return id
+    }
+
     fun removeReview(id: Int): Int{
         val db = this.writableDatabase
 
@@ -270,4 +295,83 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         return sucesso
     }
 
+
+    /////////////////////////////// IMAGEM /////////////////////////////////
+
+    fun createImagem(imagem : Imagem): Long {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+
+        contentValues.put("caminho", imagem.caminho)
+        contentValues.put("id_review", imagem.idReview)
+
+        val sucesso = db.insert(TBLIMAGEM, null, contentValues)
+        db.close()
+        return sucesso
+    }
+
+    @SuppressLint("Range")
+    fun getImagem() : ArrayList<Imagem> {
+        val db = this.readableDatabase
+        val list = ArrayList<Imagem>()
+        val sql = "SELECT * FROM $TBLIMAGEM"
+        var cursor : Cursor? = null
+
+        try{
+            cursor = db.rawQuery(sql, null)
+
+            if (cursor.moveToFirst()) {
+                var id : Int
+                var caminho : String
+                var idRestaurante : Int
+
+                do {
+                    id = cursor.getInt(cursor.getColumnIndex("id"))
+                    caminho = cursor.getString(cursor.getColumnIndex("caminho"))
+                    idRestaurante = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
+                    val imagem = Imagem(id, caminho, idRestaurante)
+                    list.add(imagem)
+                } while (cursor.moveToNext())
+            }
+        }catch (e:Exception){
+                e.printStackTrace()
+        }finally {
+            db.close()
+        }
+
+        return list
+    }
+
+    @SuppressLint("Range")
+    fun getImagemByReview(idReview: Int) : ArrayList<Imagem> {
+        val db = this.readableDatabase
+        val list = ArrayList<Imagem>()
+        val sql = "SELECT * FROM $TBLIMAGEM WHERE id_review = ?"
+        val valores = arrayOf(idReview.toString())
+        var cursor : Cursor? = null
+
+        try{
+            cursor = db.rawQuery(sql, valores)
+
+            if (cursor.moveToFirst()) {
+                var id : Int
+                var caminho : String
+                var idRestaurante : Int
+
+                do {
+                    id = cursor.getInt(cursor.getColumnIndex("id"))
+                    caminho = cursor.getString(cursor.getColumnIndex("caminho"))
+                    idRestaurante = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
+                    val imagem = Imagem(id, caminho, idRestaurante)
+                    list.add(imagem)
+                } while (cursor.moveToNext())
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }finally {
+            db.close()
+        }
+
+        return list
+    }
 }

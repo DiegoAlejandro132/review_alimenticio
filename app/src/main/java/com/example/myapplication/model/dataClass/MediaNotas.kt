@@ -1,4 +1,4 @@
 package com.example.myapplication.model.dataClass
 
-class MediaNotas(val totalNotas: Int, val qtdNotas: Int) {
+data class MediaNotas(val totalNotas: Int, val qtdNotas: Int) {
 }

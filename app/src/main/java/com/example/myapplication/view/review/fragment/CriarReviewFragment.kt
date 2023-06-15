@@ -1,10 +1,16 @@
 package com.example.myapplication.view.review.fragment
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -13,13 +19,22 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentCriarReviewBinding
+import com.example.myapplication.model.model.Imagem
 import com.example.myapplication.model.model.Restaurante
 import com.example.myapplication.model.model.Review
+import com.example.myapplication.service.ImagemService
 import com.example.myapplication.service.ReviewService
+import com.example.myapplication.view.review.adapter.ImagemAdapter
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.text.FieldPosition
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -27,6 +42,7 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
 
     private lateinit var binding : FragmentCriarReviewBinding
     private val reviewService = ReviewService(contexto)
+    private val imagemService = ImagemService(contexto)
     //acesso a midia
     private val PERMISSION_CAMERA = 1
     private val PERMISSION_GALLERY = 2
@@ -37,8 +53,11 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
     //acesso a localizacao
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     private var latitude : Double = 0.0
     private var longitude : Double = 0.0
+    private val imagemList = ArrayList<Bitmap>()
+    private lateinit var imagemAdapter: ImagemAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +70,7 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
 
         setClickListeners()
         setSpinnerRestaurante()
+        setRecyclerImgens()
     }
 
     private fun setClickListeners(){
@@ -59,7 +79,7 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
         }
 
         binding.btnAdicionarFotoCamera.setOnClickListener {
-            tirarFoto()
+            verificaPermissaoCamera()
         }
 
         binding.btnAdicionarFotoGaleria.setOnClickListener {
@@ -75,17 +95,49 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
         parentFragmentManager.popBackStack()
     }
 
-    private fun tirarFoto() {
+    private fun verificaPermissaoCamera() {
         if (ContextCompat.checkSelfPermission(contexto, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.CAMERA), PERMISSION_CAMERA)
         } else {
-            iniciarIntentCamera()
+            tirarFoto()
         }
     }
 
-    private fun iniciarIntentCamera() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
+    private fun tirarFoto() {
+        if(imagemList.size == 5){
+            Toast.makeText(contexto, "Não é possível inserir mais de 5 imagens", Toast.LENGTH_SHORT).show()
+        }else{
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            val uri : Uri? = data?.data
+            imagemList.add(imageBitmap)
+            setRecyclerImgens()
+        }
+    }
+
+    private fun salvarImagemNoDispositivo(bitmap: Bitmap): Uri? {
+        return try {
+            val fileDir = File(contexto.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "comidas")
+            fileDir.mkdirs()
+            val fileName = "comidas_${System.currentTimeMillis()}.jpg"
+            val file = File(fileDir, fileName)
+            val outputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+            FileProvider.getUriForFile(contexto, "com.example.myapplication", file)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
     }
 
     private fun selecionarImagemGaleria() {
@@ -123,11 +175,23 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
         val criou = reviewService.createReview(review)
         if(criou > 0){
             Toast.makeText(contexto, "Review criado com sucesso. Deslize para baixo para atualizar", Toast.LENGTH_SHORT).show()
-            fecharFragment()
+            criarImagens()
         }else{
             Toast.makeText(contexto, "Não foi possível criar o review. Tente mais tarde", Toast.LENGTH_SHORT).show()
         }
+    }
 
+    private fun criarImagens(){
+        val idReview = reviewService.getMaiorId()
+        for (bitmap in imagemList){
+            val path = salvarImagemNoDispositivo(bitmap)
+            val imagem = Imagem(caminho = path.toString(), idReview = idReview)
+            val criouImagem = imagemService.createImagem(imagem)
+            if(criouImagem <= 0){
+                Toast.makeText(contexto, "Houve um erro ao tentar salvar as imagens", Toast.LENGTH_SHORT).show()
+            }
+        }
+        fecharFragment()
     }
 
     private fun setSpinnerRestaurante(){
@@ -159,6 +223,36 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
         }
     }
 
+    private fun setRecyclerImgens(){
+        val recycler = binding.recyclerImagens
+        imagemAdapter = ImagemAdapter(imagemList)
+        recycler.layoutManager = LinearLayoutManager(contexto, LinearLayoutManager.HORIZONTAL, false)
+        recycler.adapter = imagemAdapter
+
+        imagemAdapter.setOnItemClickListener(object : ImagemAdapter.OnItemClickListenerImagem{
+            override fun removerImagem(position: Int) {
+                alertRemoverImagem(position)
+            }
+
+        })
+    }
+
+    private fun alertRemoverImagem(position: Int){
+        val dialog = AlertDialog.Builder(contexto)
+        dialog.setTitle("Remover Imagem")
+            .setMessage("Deseja remover esta imagem?")
+            .setCancelable(true)
+            .setPositiveButton("Sim") {dialog, id ->
+                this.imagemList.removeAt(position)
+                this.setRecyclerImgens()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Não"){dialog, id -> dialog.dismiss()}
+
+        dialog.show()
+    }
+
+    @SuppressLint("MissingPermission")
     fun getUltimaLocalizacao() {
         fusedLocationClient.lastLocation.addOnSuccessListener { location->
             if (location != null) {

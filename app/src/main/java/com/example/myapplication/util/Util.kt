@@ -32,6 +32,9 @@ class Util {
     }
 
     fun formatarDouble(value: Double): String {
+        if(value == 0.0){
+            return "0,00"
+        }
         val decimalFormat = DecimalFormat("#.00")
         return decimalFormat.format(value)
     }

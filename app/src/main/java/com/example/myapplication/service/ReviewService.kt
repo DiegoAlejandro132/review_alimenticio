@@ -31,6 +31,10 @@ class ReviewService(context: Context) {
         return controller.getReview()
     }
 
+    fun getMaiorId() : Int{
+        return controller.getMaiorId()
+    }
+
     fun removeReview(id: Int): Int {
         return controller.removeReview(id)
     }
