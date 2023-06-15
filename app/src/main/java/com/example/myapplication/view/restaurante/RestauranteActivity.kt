@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityRestauranteBinding
 import com.example.myapplication.model.model.Restaurante
-import com.example.myapplication.service.RestauranteService
+import com.example.myapplication.model.service.RestauranteService
 import com.example.myapplication.view.restaurante.adapter.RestauranteAdapter
 import com.example.myapplication.view.review.ReviewActivity
 

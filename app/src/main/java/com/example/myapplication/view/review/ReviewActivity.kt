@@ -16,8 +16,8 @@ import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityReviewBinding
 import com.example.myapplication.model.model.Restaurante
 import com.example.myapplication.model.model.Review
-import com.example.myapplication.service.RestauranteService
-import com.example.myapplication.service.ReviewService
+import com.example.myapplication.model.service.RestauranteService
+import com.example.myapplication.model.service.ReviewService
 import com.example.myapplication.view.restaurante.RestauranteActivity
 import com.example.myapplication.view.review.adapter.ReviewAdapter
 import com.example.myapplication.view.review.fragment.CriarReviewFragment

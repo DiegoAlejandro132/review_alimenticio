@@ -1,4 +1,4 @@
-package com.example.myapplication.service
+package com.example.myapplication.model.service
 
 import android.content.Context
 import android.util.Log
