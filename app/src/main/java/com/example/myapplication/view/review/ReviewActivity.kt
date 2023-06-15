@@ -1,12 +1,16 @@
 package com.example.myapplication.view.review
 
 import android.app.Dialog
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.Window
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityReviewBinding
@@ -14,8 +18,10 @@ import com.example.myapplication.model.model.Restaurante
 import com.example.myapplication.model.model.Review
 import com.example.myapplication.service.RestauranteService
 import com.example.myapplication.service.ReviewService
+import com.example.myapplication.view.restaurante.RestauranteActivity
 import com.example.myapplication.view.review.adapter.ReviewAdapter
 import com.example.myapplication.view.review.fragment.CriarReviewFragment
+import com.google.android.material.navigation.NavigationView
 
 class ReviewActivity : AppCompatActivity() {
 
@@ -25,6 +31,7 @@ class ReviewActivity : AppCompatActivity() {
     private var restauranteList = ArrayList<Restaurante>()
     private var reviewList = ArrayList<Review>()
     private lateinit var reviewAdapter: ReviewAdapter
+    private lateinit var toggle : ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +42,7 @@ class ReviewActivity : AppCompatActivity() {
         getRestaurantes()
         setRecyclerReview()
         setAtualizarTela()
+        setNavDrawer()
     }
 
     private fun setClickListeners(){
@@ -105,6 +113,40 @@ class ReviewActivity : AppCompatActivity() {
         }
 
         dialog.show()
+    }
+
+    private fun setNavDrawer(){
+        val drawerLayout = binding.drawerLayoutReviews
+        val navigationView = binding.navViewReviews
+        val menuItem = navigationView.menu.findItem(R.id.nav_menu_review)
+        menuItem.isChecked = true
+        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            drawerLayout.closeDrawer(GravityCompat.START)
+            val id = menuItem.itemId
+            when (id) {
+                R.id.nav_menu_restaurante -> irRestauranteActivity()
+            }
+            true
+        }
+
+    }
+    override fun onOptionsItemSelected(item : MenuItem) : Boolean{
+
+        if(toggle.onOptionsItemSelected(item)){
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun irRestauranteActivity(){
+        val intent = Intent(this, RestauranteActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 
 }
