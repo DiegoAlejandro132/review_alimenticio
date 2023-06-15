@@ -176,7 +176,8 @@
             android:layout_marginTop="50dp"
             android:layout_below="@+id/recycler_imagens"
             android:layout_centerHorizontal="true"
-            android:text="SALVAR"/>
+            android:text="SALVAR"
+            android:backgroundTint="@color/amarelo"/>
 
     </RelativeLayout>
 

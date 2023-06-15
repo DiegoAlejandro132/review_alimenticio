@@ -26,8 +26,8 @@ import com.example.myapplication.databinding.FragmentCriarReviewBinding
 import com.example.myapplication.model.model.Imagem
 import com.example.myapplication.model.model.Restaurante
 import com.example.myapplication.model.model.Review
-import com.example.myapplication.service.ImagemService
-import com.example.myapplication.service.ReviewService
+import com.example.myapplication.model.service.ImagemService
+import com.example.myapplication.model.service.ReviewService
 import com.example.myapplication.view.review.adapter.ImagemAdapter
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
