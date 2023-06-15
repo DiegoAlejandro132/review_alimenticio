@@ -130,8 +130,4 @@ class RestauranteActivity : AppCompatActivity() {
         dialog.dismiss()
     }
 
-    private fun removerRestaurante(id: Int){
-        restauranteService.removeRestaurante(id)
-    }
-
 }
