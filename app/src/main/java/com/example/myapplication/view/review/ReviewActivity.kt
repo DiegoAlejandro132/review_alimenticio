@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.Window
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -51,11 +52,15 @@ class ReviewActivity : AppCompatActivity() {
         binding.btnAddReview.setOnClickListener {
             irCriarReview()
         }
+
+        binding.btnDialogFiltro.setOnClickListener {
+            dialogFiltrar()
+        }
     }
 
-    private fun setRecyclerReview(){
+    private fun setRecyclerReview(filtro : String? = null){
         val recycler = binding.recyclerReviews
-        reviewList = reviewService.getReview()
+        reviewList = reviewService.getReview(filtro)
         reviewAdapter = ReviewAdapter(reviewList)
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = reviewAdapter
@@ -159,6 +164,28 @@ class ReviewActivity : AppCompatActivity() {
             addToBackStack(null)
             commit()
         }
+    }
+
+    private fun dialogFiltrar(){
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_filtro_restaurante)
+
+        val btnFechar = dialog.findViewById<ImageButton>(R.id.btn_fechar_dialog)
+        val btnFiltrar = dialog.findViewById<Button>(R.id.btn_filtrar)
+        val filtro = dialog.findViewById<EditText>(R.id.txt_filtro)
+
+        btnFechar.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnFiltrar.setOnClickListener {
+            setRecyclerReview(filtro.text.toString())
+            dialog.dismiss()
+        }
+
+
+        dialog.show()
     }
 
 }

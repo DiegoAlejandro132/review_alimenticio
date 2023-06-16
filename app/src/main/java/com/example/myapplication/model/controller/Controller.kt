@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.example.myapplication.model.dataClass.MediaNotas
+import com.example.myapplication.model.model.HistoricoNota
 import com.example.myapplication.model.model.Imagem
 import com.example.myapplication.model.model.Restaurante
 import com.example.myapplication.model.model.Review
@@ -16,11 +17,12 @@ import com.example.myapplication.model.model.Review
 class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, null, DATABASEVERSION) {
 
     companion object{
-        private const val DATABASEVERSION = 5
+        private const val DATABASEVERSION = 7
         private const val DATABASENAME = "reviewDB.db"
         private const val TBLRESTAURANTE = "tbl_restaurante"
         private const val TBLREVIEW = "tbl_review"
         private const val TBLIMAGEM = "tbl_imagem"
+        private const val TBLHISTNOTAS = "tbl_historico_nota"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -50,9 +52,19 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
                                 "   id_review INTEGER " +
                                 ")")
 
+        val createTabelaHistoricoNota =("CREATE TABLE IF NOT EXISTS $TBLHISTNOTAS" +
+                "(" +
+                "   id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "   nota REAL, " +
+                "   id_restaurante INTEGER, " +
+                "   id_review INTEGER, " +
+                "   ativo INTEGER DEFAULT 1 " +
+                ")")
+
         db?.execSQL(createTabelaRestaurante)
         db?.execSQL(createTabelaReview)
         db?.execSQL(createTabelaImagem)
+        db?.execSQL(createTabelaHistoricoNota)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -93,13 +105,13 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
 
         var id : Int
         var nome: String
-        var nota : Double
+        var nota : Float
 
         if(cursor.moveToFirst()){
             do {
                 id = cursor.getInt(cursor.getColumnIndex("id"))
                 nome = cursor.getString(cursor.getColumnIndex("nome"))
-                nota = cursor.getDouble(cursor.getColumnIndex("nota"))
+                nota = cursor.getFloat(cursor.getColumnIndex("nota"))
                 val restaurante = Restaurante(id, nome, nota)
                 list.add(restaurante)
             }while (cursor.moveToNext())
@@ -121,7 +133,7 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
             if (cursor.moveToFirst()) {
                 val id = cursor.getInt(cursor.getColumnIndex("id"))
                 val nome = cursor.getString(cursor.getColumnIndex("nome"))
-                val nota = cursor.getDouble(cursor.getColumnIndex("nota"))
+                val nota = cursor.getFloat(cursor.getColumnIndex("nota"))
                 restaurante = Restaurante(id, nome, nota)
             }
 
@@ -138,17 +150,17 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
     @SuppressLint("Range")
     fun getMediaAtualByRestaurante(id : Int) : MediaNotas {
         val db = this.writableDatabase
-        val query = "SELECT sum(nota) as total_notas, count(*) as qtd_notas FROM $TBLREVIEW WHERE id_restaurante = ?"
+        val query = "SELECT sum(nota) as total_notas, count(*) as qtd_notas FROM $TBLHISTNOTAS WHERE id_restaurante = ? AND ativo = 1"
         val valores = arrayOf(id.toString())
         val cursor: Cursor?
-        var totalNotas = 0
+        var totalNotas : Float = 0.toFloat()
         var qtdNotas = 0
 
         try {
             cursor = db.rawQuery(query, valores)
 
             if (cursor.moveToFirst()) {
-                totalNotas = cursor.getInt(cursor.getColumnIndex("total_notas"))
+                totalNotas = cursor.getFloat(cursor.getColumnIndex("total_notas"))
                 qtdNotas = cursor.getInt(cursor.getColumnIndex("qtd_notas"))
             }
             cursor?.close()
@@ -204,11 +216,60 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
     }
 
     @SuppressLint("Range")
-    fun getReview(): ArrayList<Review> {
-        val db = this.writableDatabase
+    fun getReview(filtro : String? = null): ArrayList<Review> {
+        val db = this.readableDatabase
         val list = ArrayList<Review>()
-        val sql = "SELECT $TBLREVIEW.*, $TBLRESTAURANTE.nome as nome_restaurante FROM $TBLREVIEW " +
+        var sql = "SELECT $TBLREVIEW.*, $TBLRESTAURANTE.nome as nome_restaurante FROM $TBLREVIEW " +
                   "LEFT JOIN $TBLRESTAURANTE ON $TBLREVIEW.id_restaurante = $TBLRESTAURANTE.id "
+
+        if(filtro != null){
+            sql += " WHERE $TBLREVIEW.nome LIKE '%$filtro%' OR $TBLRESTAURANTE.nome LIKE '%$filtro%'"
+        }
+
+        val cursor: Cursor?
+
+        try {
+            cursor = db.rawQuery(sql, null)
+
+            var id : Int
+            var comentario: String
+            var nota : Float
+            var latitude : Double
+            var longitude : Double
+            var idRestaurante : Int
+            var data : Long
+            var nome : String
+            var nomeRestaurante : String?
+
+            if(cursor.moveToFirst()){
+                do {
+                    id = cursor.getInt(cursor.getColumnIndex("id"))
+                    comentario = cursor.getString(cursor.getColumnIndex("comentario"))
+                    nota = cursor.getFloat(cursor.getColumnIndex("nota"))
+                    latitude = cursor.getDouble(cursor.getColumnIndex("latitude"))
+                    longitude = cursor.getDouble(cursor.getColumnIndex("longitude"))
+                    idRestaurante = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
+                    data = cursor.getLong(cursor.getColumnIndex("data"))
+                    nome = cursor.getString(cursor.getColumnIndex("nome"))
+                    nomeRestaurante = cursor.getString(cursor.getColumnIndex("nome_restaurante"))
+
+                    val review = Review(id, data, idRestaurante, latitude, longitude, nota, comentario, nome, nomeRestaurante)
+                    list.add(review)
+                }while (cursor.moveToNext())
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+            return list
+        }
+
+        return list
+    }
+
+    @SuppressLint("Range")
+    fun getReviewById(id : Int): Review? {
+        val db = this.writableDatabase
+        var review : Review? = null
+        val sql = "SELECT * FROM $TBLREVIEW WHERE id = $id"
 
         val cursor: Cursor?
 
@@ -216,7 +277,7 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
             cursor = db.rawQuery(sql, null)
         }catch (e:Exception){
             e.printStackTrace()
-            return list
+            return null
         }
 
         var id : Int
@@ -227,7 +288,6 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         var idRestaurante : Int
         var data : Long
         var nome : String
-        var nomeRestaurante : String?
 
         if(cursor.moveToFirst()){
             do {
@@ -239,13 +299,11 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
                 idRestaurante = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
                 data = cursor.getLong(cursor.getColumnIndex("data"))
                 nome = cursor.getString(cursor.getColumnIndex("nome"))
-                nomeRestaurante = cursor.getString(cursor.getColumnIndex("nome_restaurante"))
 
-                val review = Review(id, data, idRestaurante, latitude, longitude, nota, comentario, nome, nomeRestaurante)
-                list.add(review)
+                review = Review(id, data, idRestaurante, latitude, longitude, nota, comentario, nome)
             }while (cursor.moveToNext())
         }
-        return list
+        return review
     }
 
     @SuppressLint("Range")
@@ -457,5 +515,31 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         }
 
         return list
+    }
+
+
+    /////////////////////////////// NOTA historico /////////////////////////////////
+
+    fun createLogNota(log : HistoricoNota): Long {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+
+        contentValues.put("id_review", log.idReview)
+        contentValues.put("id_restaurante", log.idRestaurante)
+        contentValues.put("nota", log.nota)
+
+        val sucesso = db.insert(TBLHISTNOTAS, null, contentValues)
+        db.close()
+        return sucesso
+    }
+
+
+    fun desativarNotasAnteriores(idReview : Int){
+        val db = this.writableDatabase
+        val sql = "UPDATE $TBLHISTNOTAS SET ativo = 0 WHERE id_review = $idReview"
+
+        val sucesso = db.execSQL(sql)
+        db.close()
+        return sucesso
     }
 }

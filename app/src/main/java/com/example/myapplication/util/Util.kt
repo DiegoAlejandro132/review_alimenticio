@@ -36,8 +36,8 @@ class Util {
         return "$data - $hora"
     }
 
-    fun formatarDouble(value: Double): String {
-        if(value == 0.0){
+    fun formatarFloat(value: Float): String {
+        if(value == (0.0).toFloat()){
             return "0,00"
         }
         val decimalFormat = DecimalFormat("#.00")

@@ -120,7 +120,7 @@ class RestauranteActivity : AppCompatActivity() {
 
     private fun criarRestaurante(dialog: Dialog){
         val nome = dialog.findViewById<EditText>(R.id.txt_nome)
-        val restaurante = Restaurante(nome = nome.text.toString(), nota = 0.0)
+        val restaurante = Restaurante(nome = nome.text.toString(), nota = (0.0).toFloat())
         val criou = restauranteService.createRestaurante(restaurante)
         if(criou > 0){
             setRecyclerRestaurantes()
@@ -132,8 +132,7 @@ class RestauranteActivity : AppCompatActivity() {
 
     private fun editarRestaurante(dialog: Dialog, position: Int){
         val nome = dialog.findViewById<EditText>(R.id.txt_nome)
-        val nota = 4.2
-        val restaurante = Restaurante(restauranteList[position].id, nome.text.toString(),nota)
+        val restaurante = Restaurante(restauranteList[position].id, nome.text.toString(), restauranteList[position].nota)
         val alterou = restauranteService.updateRestaurante(restaurante)
         if(alterou > 0){
             setRecyclerRestaurantes()
