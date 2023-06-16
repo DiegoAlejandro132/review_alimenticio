@@ -4,10 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.RatingBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -17,6 +14,16 @@ import com.example.myapplication.model.model.Review
 import com.example.myapplication.util.Util
 
 class ReviewAdapter(var context : Context, var reviewList : ArrayList<Review>, var imagemList : ArrayList<Imagem>) : RecyclerView.Adapter<ReviewAdapter.ViewHolder>() {
+
+    private lateinit var listener : OnItemClickListenerReviewPorRestaurante
+
+    interface OnItemClickListenerReviewPorRestaurante{
+        fun verNoMaps(position: Int)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListenerReviewPorRestaurante){
+        this.listener = listener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.model_item_list_review_por_restaurante, parent, false)
@@ -34,6 +41,9 @@ class ReviewAdapter(var context : Context, var reviewList : ArrayList<Review>, v
                 holder.imagem.setImageBitmap(Util().uriToBitmap(context, imagem.caminho.toUri()))
             }
         }
+        if(reviewList[position].latitude == 0.0 && reviewList[position].longitude == 0.0){
+            holder.btnMaps.visibility = View.GONE
+        }
     }
 
     override fun getItemCount(): Int {
@@ -45,5 +55,12 @@ class ReviewAdapter(var context : Context, var reviewList : ArrayList<Review>, v
         val nome = itemView.findViewById<TextView>(R.id.txt_nome_review)
         val nota = itemView.findViewById<TextView>(R.id.txt_nota)
         val rating = itemView.findViewById<RatingBar>(R.id.rating_nota)
+        val btnMaps = itemView.findViewById<FrameLayout>(R.id.btn_ver_no_maps)
+
+        init {
+            btnMaps.setOnClickListener {
+                listener.verNoMaps(adapterPosition)
+            }
+        }
     }
 }

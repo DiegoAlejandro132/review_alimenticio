@@ -35,7 +35,6 @@ class ReviewAdapter(var list: ArrayList<Review>): RecyclerView.Adapter<ReviewAda
         holder.data.text = Util().getDataHoraFromLong(list[position].data)
         holder.nota.text = list[position].nota.toString()
         holder.restaurante.text = if(list[position].nomeRestaurante == null) "Sem restaurante" else  list[position].nomeRestaurante
-        //holder.localizacao.text = list[position].latitude.toString()
     }
 
     override fun getItemCount(): Int {
@@ -45,7 +44,6 @@ class ReviewAdapter(var list: ArrayList<Review>): RecyclerView.Adapter<ReviewAda
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         var nota = itemView.findViewById<TextView>(R.id.txt_nota)
         var nome = itemView.findViewById<TextView>(R.id.txt_nome_review)
-        var localizacao = itemView.findViewById<TextView>(R.id.txt_localizacao)
         var restaurante = itemView.findViewById<TextView>(R.id.txt_restaurante)
         var data = itemView.findViewById<TextView>(R.id.txt_data)
         var btnRemover = itemView.findViewById<ImageButton>(R.id.btn_remover_review)

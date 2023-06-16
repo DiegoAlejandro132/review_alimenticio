@@ -60,6 +60,28 @@
             android:textColor="@color/black"
             android:textSize="20sp"/>
 
+        <FrameLayout
+            android:id="@+id/btn_ver_no_maps"
+            android:layout_width="300dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/maps"
+                android:scaleType="centerCrop" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:backgroundTint="@android:color/transparent"
+                android:text="Ver no maps" />
+
+        </FrameLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

@@ -45,28 +45,11 @@
                 android:text="Nota: "/>
 
             <TextView
-                android:id="@+id/txt_localizacao"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txt_nota"
-                android:textSize="16sp"
-                android:layout_toRightOf="@+id/label_localizacao"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/label_localizacao"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_below="@+id/label_nota"
-                android:text="Localização: "/>
-
-            <TextView
                 android:id="@+id/label_restaurante"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:layout_below="@+id/label_localizacao"
+                android:layout_below="@+id/label_nota"
                 android:text="Restaurante: "/>
 
             <TextView
@@ -74,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:layout_below="@+id/label_localizacao"
+                android:layout_below="@+id/label_nota"
                 android:textColor="@color/black"
                 android:layout_toRightOf="@+id/label_restaurante"/>
 
