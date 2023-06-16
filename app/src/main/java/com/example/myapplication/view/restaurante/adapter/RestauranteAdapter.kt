@@ -36,7 +36,7 @@ class RestauranteAdapter(var list : ArrayList<Restaurante>) : RecyclerView.Adapt
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.nome.text = if(list[position].nome == "") "Sem nome" else list[position].nome
-        holder.nota.text = Util().formatarDouble(list[position].nota)
+        holder.nota.text = Util().formatarFloat(list[position].nota)
     }
 
     inner class ViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView){

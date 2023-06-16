@@ -229,7 +229,7 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
         val adapter = ArrayAdapter(contexto, android.R.layout.simple_spinner_item, restaurantes)
 
         val selecione = "Selecione"
-        adapter.insert(Restaurante(nome = selecione, nota = 0.0), 0)
+        adapter.insert(Restaurante(nome = selecione, nota = (0.0).toFloat()), 0)
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
