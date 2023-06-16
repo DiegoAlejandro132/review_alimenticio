@@ -19,4 +19,8 @@ class ImagemService(context: Context) {
     fun getImagemByReview(idReview : Int): ArrayList<Imagem> {
         return controller.getImagemByReview(idReview)
     }
+
+    fun getImagensByRestaurante(idRestaurnte : Int): ArrayList<Imagem> {
+        return controller.getImagensByRestaurante(idRestaurnte)
+    }
 }

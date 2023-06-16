@@ -16,8 +16,9 @@ class RestauranteAdapter(var list : ArrayList<Restaurante>) : RecyclerView.Adapt
     private lateinit var listener : OnItemClickListenerRestaurante
 
     interface OnItemClickListenerRestaurante{
-        fun editarRestaurante(position: Int)
-        fun removerRestaurante(position: Int)
+        fun editar(position: Int)
+        fun remover(position: Int)
+        fun visualizar(position: Int)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListenerRestaurante){
@@ -42,15 +43,20 @@ class RestauranteAdapter(var list : ArrayList<Restaurante>) : RecyclerView.Adapt
         val nome = itemView.findViewById<TextView>(R.id.txt_nome)
         val nota = itemView.findViewById<TextView>(R.id.txt_nota)
         val excluir = itemView.findViewById<ImageButton>(R.id.btn_remover_restaurante)
+        val editar = itemView.findViewById<ImageButton>(R.id.btn_editar_restaurante)
         val card = itemView.findViewById<CardView>(R.id.card_restaurante)
 
         init {
-            card.setOnClickListener {
-                listener.editarRestaurante(adapterPosition)
+            editar.setOnClickListener {
+                listener.editar(adapterPosition)
             }
 
             excluir.setOnClickListener {
-                listener.removerRestaurante(adapterPosition)
+                listener.remover(adapterPosition)
+            }
+
+            card.setOnClickListener{
+                listener.visualizar(adapterPosition)
             }
         }
     }

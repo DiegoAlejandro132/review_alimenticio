@@ -269,6 +269,50 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         return id
     }
 
+    @SuppressLint("Range")
+    fun getReviewByRestaurante(idRestaurante : Int): ArrayList<Review> {
+        val db = this.writableDatabase
+        val list = ArrayList<Review>()
+        val sql = ("SELECT * FROM $TBLREVIEW WHERE id_restaurante = ?")
+        val valores = arrayOf(idRestaurante.toString())
+
+        val cursor: Cursor?
+
+        try {
+            cursor = db.rawQuery(sql, valores)
+
+            if(cursor.moveToFirst()){
+                var id : Int
+                var comentario: String
+                var nota : Float
+                var latitude : Double
+                var longitude : Double
+                var idRestaurante : Int
+                var data : Long
+                var nome : String
+
+                do {
+                    id = cursor.getInt(cursor.getColumnIndex("id"))
+                    comentario = cursor.getString(cursor.getColumnIndex("comentario"))
+                    nota = cursor.getFloat(cursor.getColumnIndex("nota"))
+                    latitude = cursor.getDouble(cursor.getColumnIndex("latitude"))
+                    longitude = cursor.getDouble(cursor.getColumnIndex("longitude"))
+                    idRestaurante = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
+                    data = cursor.getLong(cursor.getColumnIndex("data"))
+                    nome = cursor.getString(cursor.getColumnIndex("nome"))
+
+                    val review = Review(id, data, idRestaurante, latitude, longitude, nota, comentario, nome)
+                    list.add(review)
+                }while (cursor.moveToNext())
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }finally {
+            db.close()
+        }
+        return list
+    }
+
     fun removeReview(id: Int): Int{
         val db = this.writableDatabase
 
@@ -323,13 +367,13 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
             if (cursor.moveToFirst()) {
                 var id : Int
                 var caminho : String
-                var idRestaurante : Int
+                var idReview : Int
 
                 do {
                     id = cursor.getInt(cursor.getColumnIndex("id"))
                     caminho = cursor.getString(cursor.getColumnIndex("caminho"))
-                    idRestaurante = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
-                    val imagem = Imagem(id, caminho, idRestaurante)
+                    idReview = cursor.getInt(cursor.getColumnIndex("id_review"))
+                    val imagem = Imagem(id, caminho, idReview)
                     list.add(imagem)
                 } while (cursor.moveToNext())
             }
@@ -356,13 +400,50 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
             if (cursor.moveToFirst()) {
                 var id : Int
                 var caminho : String
-                var idRestaurante : Int
+                var idReview : Int
 
                 do {
                     id = cursor.getInt(cursor.getColumnIndex("id"))
                     caminho = cursor.getString(cursor.getColumnIndex("caminho"))
-                    idRestaurante = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
-                    val imagem = Imagem(id, caminho, idRestaurante)
+                    idReview = cursor.getInt(cursor.getColumnIndex("id_review"))
+                    val imagem = Imagem(id, caminho, idReview)
+                    list.add(imagem)
+                } while (cursor.moveToNext())
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }finally {
+            db.close()
+        }
+
+        return list
+    }
+
+    @SuppressLint("Range")
+    fun getImagensByRestaurante(idRestaurante : Int): ArrayList<Imagem> {
+        val db = this.readableDatabase
+        val list = ArrayList<Imagem>()
+        val sql = "SELECT * FROM $TBLIMAGEM " +
+                  "JOIN $TBLREVIEW ON $TBLIMAGEM.id_review = $TBLIMAGEM.id " +
+                  "JOIN $TBLRESTAURANTE ON $TBLREVIEW.id_restaurante = $TBLRESTAURANTE.id  " +
+                  "WHERE $TBLRESTAURANTE.id = ? " +
+                  "LIMIT 1"
+        val valores = arrayOf(idRestaurante.toString())
+        var cursor : Cursor? = null
+
+        try{
+            cursor = db.rawQuery(sql, valores)
+
+            if (cursor.moveToFirst()) {
+                var id : Int
+                var caminho : String
+                var idReview : Int
+
+                do {
+                    id = cursor.getInt(cursor.getColumnIndex("id"))
+                    caminho = cursor.getString(cursor.getColumnIndex("caminho"))
+                    idReview = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
+                    val imagem = Imagem(id, caminho, idReview)
                     list.add(imagem)
                 } while (cursor.moveToNext())
             }

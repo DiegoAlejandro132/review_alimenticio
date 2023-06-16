@@ -16,6 +16,7 @@ import com.example.myapplication.databinding.ActivityRestauranteBinding
 import com.example.myapplication.model.model.Restaurante
 import com.example.myapplication.model.service.RestauranteService
 import com.example.myapplication.view.restaurante.adapter.RestauranteAdapter
+import com.example.myapplication.view.restaurante.fragment.VisualizarRestauranteFragment
 import com.example.myapplication.view.review.ReviewActivity
 
 class RestauranteActivity : AppCompatActivity() {
@@ -102,12 +103,16 @@ class RestauranteActivity : AppCompatActivity() {
         recycler.adapter = restaurantesAdapter
 
         restaurantesAdapter.setOnItemClickListener(object : RestauranteAdapter.OnItemClickListenerRestaurante{
-            override fun editarRestaurante(position: Int) {
+            override fun editar(position: Int) {
                 dialogRestaurante(restauranteList[position], position)
             }
 
-            override fun removerRestaurante(position: Int) {
+            override fun remover(position: Int) {
                 dialogRemoverRestaurante(restauranteList[position])
+            }
+
+            override fun visualizar(position: Int) {
+                visualizarRetaurante(restauranteList[position].id!!)
             }
 
         })
@@ -158,6 +163,7 @@ class RestauranteActivity : AppCompatActivity() {
         }
 
     }
+
     override fun onOptionsItemSelected(item : MenuItem) : Boolean{
 
         if(toggle.onOptionsItemSelected(item)){
@@ -170,6 +176,15 @@ class RestauranteActivity : AppCompatActivity() {
         val intent = Intent(this, ReviewActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+    }
+
+    private fun visualizarRetaurante(idRestaurante : Int){
+        val visualizarRestauranteFragment = VisualizarRestauranteFragment(this, idRestaurante)
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.frame_layout_restaurante123, visualizarRestauranteFragment)
+            addToBackStack(null)
+            commit()
+        }
     }
 
 }

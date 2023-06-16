@@ -35,6 +35,10 @@ class ReviewService(context: Context) {
         return controller.getMaiorId()
     }
 
+    fun getReviewByRestaurante(idRestaurante : Int): ArrayList<Review> {
+        return controller.getReviewByRestaurante(idRestaurante)
+    }
+
     fun removeReview(id: Int): Int {
         return controller.removeReview(id)
     }
