@@ -20,10 +20,6 @@ class ReviewService(var context: Context) {
                 val notasRestaurante = restauranteService.getMediaAtualByRestaurante(restaurante.id!!)
                 val notaNova = (notasRestaurante.totalNotas + review.nota)/(notasRestaurante.qtdNotas + 1)
                 val restauranteNovo = Restaurante(restaurante.id, restaurante.nome, notaNova)
-                Log.d("notaa ", notasRestaurante.totalNotas.toString())
-                Log.d("notaa ", review.nota.toString())
-                Log.d("notaa ", notasRestaurante.qtdNotas.toString())
-                Log.d("notaa ", notaNova.toString())
                 val alterou = restauranteService.updateRestaurante(restauranteNovo)
                 if(alterou <= 0){
                     Log.e("reviewService.createReview ", "Nota do restaurante nao alterada")
@@ -56,12 +52,9 @@ class ReviewService(var context: Context) {
 
     fun updateReview(review: Review): Int {
         val reviewAntigo = getReviewById(review.id!!)
-        Toast.makeText(context, review.id.toString(), Toast.LENGTH_SHORT).show()
         if(reviewAntigo != null && (reviewAntigo.nota != review.nota)){
-            Toast.makeText(context, "mudou", Toast.LENGTH_SHORT).show()
             controller.desativarNotasAnteriores(review.id!!)
             controller.createLogNota(HistoricoNota(idRestaurante = review.idRestaurante, idReview = review.id!!, nota = review.nota))
-            Log.d("notaa2 ", review.nota.toString())
         }
         if(review.idRestaurante != null){
             val restaurante = restauranteService.getRestauranteById(review.idRestaurante!!)
@@ -70,10 +63,6 @@ class ReviewService(var context: Context) {
                 val notaNova = (notasRestaurante.totalNotas)/(notasRestaurante.qtdNotas)
                 val restauranteNovo = Restaurante(restaurante.id, restaurante.nome, notaNova)
                 val alterou = restauranteService.updateRestaurante(restauranteNovo)
-                Log.d("notaa2 ", notasRestaurante.totalNotas.toString())
-                Log.d("notaa2 ", review.nota.toString())
-                Log.d("notaa2 ", notasRestaurante.qtdNotas.toString())
-                Log.d("notaa2 ", notaNova.toString())
                 if(alterou <= 0){
                     Log.e("reviewService.createReview ", "Nota do restaurante nao alterada")
                 }

@@ -98,24 +98,26 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
 
         try {
             cursor = db.rawQuery(sql, null)
+
+            var id : Int
+            var nome: String
+            var nota : Float
+
+            if(cursor.moveToFirst()){
+                do {
+                    id = cursor.getInt(cursor.getColumnIndex("id"))
+                    nome = cursor.getString(cursor.getColumnIndex("nome"))
+                    nota = cursor.getFloat(cursor.getColumnIndex("nota"))
+                    val restaurante = Restaurante(id, nome, nota)
+                    list.add(restaurante)
+                }while (cursor.moveToNext())
+            }
         }catch (e:Exception){
             e.printStackTrace()
-            return list
+        }finally {
+            db.close()
         }
 
-        var id : Int
-        var nome: String
-        var nota : Float
-
-        if(cursor.moveToFirst()){
-            do {
-                id = cursor.getInt(cursor.getColumnIndex("id"))
-                nome = cursor.getString(cursor.getColumnIndex("nome"))
-                nota = cursor.getFloat(cursor.getColumnIndex("nota"))
-                val restaurante = Restaurante(id, nome, nota)
-                list.add(restaurante)
-            }while (cursor.moveToNext())
-        }
         return list
     }
 
@@ -169,8 +171,6 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         } finally {
             db.close()
         }
-        Log.d("msgg ", totalNotas.toString())
-        Log.d("msgg ", qtdNotas.toString())
         return MediaNotas(totalNotas, qtdNotas)
     }
 
@@ -259,7 +259,8 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
             }
         }catch (e:Exception){
             e.printStackTrace()
-            return list
+        }finally {
+            db.close()
         }
 
         return list
@@ -275,34 +276,37 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
 
         try {
             cursor = db.rawQuery(sql, null)
+
+            var id : Int
+            var comentario: String
+            var nota : Float
+            var latitude : Double
+            var longitude : Double
+            var idRestaurante : Int
+            var data : Long
+            var nome : String
+
+            if(cursor.moveToFirst()){
+                do {
+                    id = cursor.getInt(cursor.getColumnIndex("id"))
+                    comentario = cursor.getString(cursor.getColumnIndex("comentario"))
+                    nota = cursor.getFloat(cursor.getColumnIndex("nota"))
+                    latitude = cursor.getDouble(cursor.getColumnIndex("latitude"))
+                    longitude = cursor.getDouble(cursor.getColumnIndex("longitude"))
+                    idRestaurante = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
+                    data = cursor.getLong(cursor.getColumnIndex("data"))
+                    nome = cursor.getString(cursor.getColumnIndex("nome"))
+
+                    review = Review(id, data, idRestaurante, latitude, longitude, nota, comentario, nome)
+                }while (cursor.moveToNext())
+            }
         }catch (e:Exception){
             e.printStackTrace()
             return null
+        }finally {
+            db.close()
         }
 
-        var id : Int
-        var comentario: String
-        var nota : Float
-        var latitude : Double
-        var longitude : Double
-        var idRestaurante : Int
-        var data : Long
-        var nome : String
-
-        if(cursor.moveToFirst()){
-            do {
-                id = cursor.getInt(cursor.getColumnIndex("id"))
-                comentario = cursor.getString(cursor.getColumnIndex("comentario"))
-                nota = cursor.getFloat(cursor.getColumnIndex("nota"))
-                latitude = cursor.getDouble(cursor.getColumnIndex("latitude"))
-                longitude = cursor.getDouble(cursor.getColumnIndex("longitude"))
-                idRestaurante = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
-                data = cursor.getLong(cursor.getColumnIndex("data"))
-                nome = cursor.getString(cursor.getColumnIndex("nome"))
-
-                review = Review(id, data, idRestaurante, latitude, longitude, nota, comentario, nome)
-            }while (cursor.moveToNext())
-        }
         return review
     }
 
@@ -532,7 +536,6 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         db.close()
         return sucesso
     }
-
 
     fun desativarNotasAnteriores(idReview : Int){
         val db = this.writableDatabase
