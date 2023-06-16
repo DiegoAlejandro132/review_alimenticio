@@ -55,7 +55,7 @@ class ReviewAdapter(var context : Context, var reviewList : ArrayList<Review>, v
         val nome = itemView.findViewById<TextView>(R.id.txt_nome_review)
         val nota = itemView.findViewById<TextView>(R.id.txt_nota)
         val rating = itemView.findViewById<RatingBar>(R.id.rating_nota)
-        val btnMaps = itemView.findViewById<FrameLayout>(R.id.btn_ver_no_maps)
+        val btnMaps = itemView.findViewById<Button>(R.id.btn_ver_no_maps)
 
         init {
             btnMaps.setOnClickListener {

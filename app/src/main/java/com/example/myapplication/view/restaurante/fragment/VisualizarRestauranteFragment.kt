@@ -58,18 +58,16 @@ class VisualizarRestauranteFragment(var contexto: Context, var restaurante : Res
             override fun verNoMaps(position: Int) {
                 val latitude = reviewList[position].latitude
                 val longitude = reviewList[position].longitude
+                val uriMaps = Uri.parse("geo:$latitude,$longitude")
+                val mapIntent = Intent(Intent.ACTION_VIEW, uriMaps)
+                mapIntent.setPackage("com.google.android.apps.maps")
 
-                if(latitude != 0.0 && longitude != 0.0){
-                    val uriMaps = Uri.parse("geo:$latitude,$longitude")
-                    val mapIntent = Intent(Intent.ACTION_VIEW, uriMaps)
-                    mapIntent.setPackage("com.google.android.apps.maps")
-
-                    if (mapIntent.resolveActivity(context!!.packageManager) != null) {
-                        context!!.startActivity(mapIntent)
-                    } else {
-                        Toast.makeText(context, "Aplicativo do Google Maps não encontrado", Toast.LENGTH_SHORT).show()
-                    }
+                if (mapIntent.resolveActivity(context!!.packageManager) != null) {
+                    context!!.startActivity(mapIntent)
+                } else {
+                    Toast.makeText(context, "Aplicativo do Google Maps não encontrado", Toast.LENGTH_SHORT).show()
                 }
+
             }
 
         })
