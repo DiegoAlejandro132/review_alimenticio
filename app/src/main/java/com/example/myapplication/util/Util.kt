@@ -1,5 +1,10 @@
 package com.example.myapplication.util
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import java.io.IOException
 import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -38,4 +43,15 @@ class Util {
         val decimalFormat = DecimalFormat("#.00")
         return decimalFormat.format(value)
     }
+
+    fun uriToBitmap(context : Context, uri: Uri): Bitmap? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            BitmapFactory.decodeStream(inputStream)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
 }

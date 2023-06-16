@@ -22,53 +22,63 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:text="NOME"
                 android:textColor="@color/black"
-                android:text="NOME"/>
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txt_nota"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:layout_below="@+id/txt_nome"
                 android:layout_toRightOf="@+id/label_nota"
                 android:textColor="@color/black"
-                android:layout_below="@+id/txt_nome"/>
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/label_nota"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
                 android:layout_below="@+id/txt_nome"
-                android:text="Nota: "/>
+                android:text="Nota: "
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/txt_localizacao"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
                 android:layout_below="@+id/txt_nota"
                 android:layout_toRightOf="@+id/label_localizacao"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/label_localizacao"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/label_nota"
-                android:textSize="16dp"
-                android:text="Localização: "/>
+                android:text="Localização: "
+                android:textSize="16dp" />
+
+            <ImageButton
+                android:id="@+id/btn_editar_restaurante"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="15dp"
+                android:layout_toLeftOf="@+id/btn_remover_restaurante"
+                android:backgroundTint="@android:color/transparent"
+                android:src="@drawable/edit" />
 
             <ImageButton
                 android:id="@+id/btn_remover_restaurante"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/transparent"
-                android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
-                android:src="@drawable/delete"/>
+                android:layout_centerVertical="true"
+                android:backgroundTint="@android:color/transparent"
+                android:src="@drawable/delete" />
 
         </RelativeLayout>
 

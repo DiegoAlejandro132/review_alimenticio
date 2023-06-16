@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -28,6 +29,7 @@ import com.example.myapplication.model.model.Restaurante
 import com.example.myapplication.model.model.Review
 import com.example.myapplication.model.service.ImagemService
 import com.example.myapplication.model.service.ReviewService
+import com.example.myapplication.util.Util
 import com.example.myapplication.view.review.adapter.ImagemAdapter
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -83,7 +85,7 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
         }
 
         binding.btnAdicionarFotoGaleria.setOnClickListener {
-            selecionarImagemGaleria()
+            verificaPermissaoGaleria()
         }
 
         binding.btnCriarReview.setOnClickListener {
@@ -112,16 +114,6 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            val imageBitmap = data?.extras?.get("data") as Bitmap
-            val uri : Uri? = data?.data
-            imagemList.add(imageBitmap)
-            setRecyclerImgens()
-        }
-    }
 
     private fun salvarImagemNoDispositivo(bitmap: Bitmap): Uri? {
         return try {
@@ -140,13 +132,14 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
         }
     }
 
-    private fun selecionarImagemGaleria() {
+    private fun verificaPermissaoGaleria(){
         if (ContextCompat.checkSelfPermission(
                 contexto,
                 Manifest.permission.READ_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            requestPermissions(
+            ActivityCompat.requestPermissions(
+                contexto as Activity,
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                 PERMISSION_GALLERY
             )
@@ -159,6 +152,43 @@ class CriarReviewFragment(var contexto: Context, var restaurantes : ArrayList<Re
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.type = "image/*"
         startActivityForResult(intent, REQUEST_IMAGE_PICK)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == PERMISSION_GALLERY) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                iniciarIntentGaleria()
+            } else {
+                Toast.makeText(contexto, "permissao negada", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            //val uri : Uri? = data?.data
+            imagemList.add(imageBitmap)
+            setRecyclerImgens()
+        }
+
+        if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK) {
+            val uri: Uri? = data?.data
+            val imageBitmap = uri?.let { Util().uriToBitmap(contexto, it) }
+            imageBitmap?.let {
+                imagemList.add(it)
+                setRecyclerImgens()
+            }
+        }
     }
 
     private fun criarReview(){

@@ -10,8 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginStart="15dp"
+        android:text="Adicionar comentario"
         android:layout_centerHorizontal="true"
-        android:text="Adicionar restaurante"
         android:layout_alignParentTop="true"
         android:textSize="20dp"
         android:textStyle="bold"
@@ -26,39 +26,24 @@
         android:backgroundTint="@android:color/transparent"
         android:src="@drawable/close"/>
 
-    <LinearLayout
-        android:id="@+id/layout_nome_restaurante"
+    <EditText
+        android:id="@+id/txt_comentario"
+        style="@style/editTextStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txt_titulo_dialog"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="40dp"
-            android:text="Nome"
-            android:textColor="@color/black"/>
-
-        <EditText
-            android:id="@+id/txt_nome"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            style="@style/editTextStyle"
-            android:layout_marginEnd="15dp"
-            android:layout_marginStart="15dp"
-            android:padding="5dp"
-            android:layout_below="@id/txt_titulo_dialog"/>
-
-    </LinearLayout>
+        android:layout_height="50dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="40dp"
+        android:padding="5dp"
+        android:hint="Comentario"
+        android:layout_below="@id/txt_titulo_dialog"/>
 
     <Button
-        android:id="@+id/btn_criar_restaurante"
+        android:id="@+id/btn_adicionar_comentario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
-        android:layout_below="@id/layout_nome_restaurante"
+        android:layout_below="@id/txt_comentario"
         android:layout_centerHorizontal="true"
         android:text="SALVAR"
         android:backgroundTint="@color/amarelo"/>
