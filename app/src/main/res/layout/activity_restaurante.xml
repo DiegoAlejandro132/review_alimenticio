@@ -54,7 +54,7 @@
         </RelativeLayout>
 
         <FrameLayout
-            android:id="@+id/frame_layout_restaurante123"
+            android:id="@+id/frame_layout_restaurante"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

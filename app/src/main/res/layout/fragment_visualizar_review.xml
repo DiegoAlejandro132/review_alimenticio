@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.review.fragment.CriarReviewFragment"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <ImageButton
+            android:id="@+id/btn_fechar_fragment_ver_review"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="@android:color/transparent"
+            android:src="@drawable/close"/>
+
+        <TextView
+            android:id="@+id/txt_nome_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:textStyle="bold"
+            android:textSize="22dp"
+            android:textColor="@color/black"
+            android:text="Nome comida"/>
+
+        <TextView
+            android:id="@+id/label_comentario_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/label_restaurantes_cadastrados"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="18sp"
+            android:text="Seus comentarios"
+            android:textColor="@color/black"/>
+
+        <ImageButton
+            android:id="@+id/btn_dialog_add_comentario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/label_comentario_review"
+            android:layout_above="@+id/txt_comentario_review"
+            android:backgroundTint="@android:color/transparent"
+            android:src="@drawable/add"
+            />
+
+        <TextView
+            android:id="@+id/txt_comentario_review"
+            style="@style/editTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_below="@id/label_comentario_review"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"/>
+
+        <TextView
+            android:id="@+id/label_nota_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/txt_comentario_review"
+            android:text="Nota"
+            android:textSize="18sp"
+            android:textColor="@color/black"/>
+
+        <RatingBar
+            android:id="@+id/rating_nota_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:progressTint="#ffe20a"
+            android:progressBackgroundTintMode="multiply"
+            android:secondaryProgressTintMode="multiply"
+            android:layout_marginTop="10dp"
+            android:isIndicator="true"
+            android:layout_below="@+id/label_nota_review"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/label_restaurantes_cadastrados"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/txt_nome_review"
+            android:textSize="18sp"
+            android:text="Restaurante:"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/txt_restaurante"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_below="@+id/label_restaurantes_cadastrados"
+            android:text="Restaurante do review"/>
+
+        <Button
+            android:id="@+id/btn_salvar_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_below="@+id/rating_nota_review"
+            android:layout_centerHorizontal="true"
+            android:text="EDITAR"
+            android:backgroundTint="@color/amarelo"/>
+
+    </RelativeLayout>
+
+</ScrollView>

@@ -8,12 +8,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentVisualizarRestauranteBinding
 import com.example.myapplication.model.model.Imagem
+import com.example.myapplication.model.model.Restaurante
 import com.example.myapplication.model.model.Review
 import com.example.myapplication.model.service.ImagemService
 import com.example.myapplication.model.service.ReviewService
 import com.example.myapplication.view.restaurante.adapter.ReviewAdapter
 
-class VisualizarRestauranteFragment(var contexto: Context, var idRestaurante : Int) : Fragment(R.layout.fragment_visualizar_restaurante) {
+class VisualizarRestauranteFragment(var contexto: Context, var restaurante : Restaurante) : Fragment(R.layout.fragment_visualizar_restaurante) {
 
     private lateinit var binding : FragmentVisualizarRestauranteBinding
     private var reviewList = ArrayList<Review>()
@@ -27,6 +28,7 @@ class VisualizarRestauranteFragment(var contexto: Context, var idRestaurante : I
 
         setRecyclerReview()
         setClickListeners()
+        binding.txtNomeRestaurante.text = restaurante.nome
     }
 
     private fun setClickListeners(){
@@ -40,8 +42,8 @@ class VisualizarRestauranteFragment(var contexto: Context, var idRestaurante : I
     }
 
     private fun setRecyclerReview(){
-        reviewList = reviewService.getReviewByRestaurante(idRestaurante)
-        imagemList = imagemService.getImagensByRestaurante(idRestaurante)
+        reviewList = reviewService.getReviewByRestaurante(restaurante.id!!)
+        imagemList = imagemService.getImagensByRestaurante(restaurante.id!!)
         val recycler = binding.recyclerReviews
         adapter = ReviewAdapter(contexto, reviewList, imagemList)
         recycler.layoutManager = LinearLayoutManager(contexto, LinearLayoutManager.VERTICAL, false)

@@ -207,7 +207,8 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
     fun getReview(): ArrayList<Review> {
         val db = this.writableDatabase
         val list = ArrayList<Review>()
-        val sql = ("SELECT * FROM $TBLREVIEW")
+        val sql = "SELECT $TBLREVIEW.*, $TBLRESTAURANTE.nome as nome_restaurante FROM $TBLREVIEW " +
+                  "LEFT JOIN $TBLRESTAURANTE ON $TBLREVIEW.id_restaurante = $TBLRESTAURANTE.id "
 
         val cursor: Cursor?
 
@@ -226,6 +227,7 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
         var idRestaurante : Int
         var data : Long
         var nome : String
+        var nomeRestaurante : String?
 
         if(cursor.moveToFirst()){
             do {
@@ -237,8 +239,9 @@ class Controller (context: Context): SQLiteOpenHelper(context, DATABASENAME, nul
                 idRestaurante = cursor.getInt(cursor.getColumnIndex("id_restaurante"))
                 data = cursor.getLong(cursor.getColumnIndex("data"))
                 nome = cursor.getString(cursor.getColumnIndex("nome"))
+                nomeRestaurante = cursor.getString(cursor.getColumnIndex("nome_restaurante"))
 
-                val review = Review(id, data, idRestaurante, latitude, longitude, nota, comentario, nome)
+                val review = Review(id, data, idRestaurante, latitude, longitude, nota, comentario, nome, nomeRestaurante)
                 list.add(review)
             }while (cursor.moveToNext())
         }

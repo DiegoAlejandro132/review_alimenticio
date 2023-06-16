@@ -28,7 +28,7 @@
             android:layout_marginTop="15dp"
             android:text="NOME DO RESTURANTE"
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textStyle="bold"/>
 
         <androidx.recyclerview.widget.RecyclerView

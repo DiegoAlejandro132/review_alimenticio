@@ -19,8 +19,10 @@ import com.example.myapplication.model.model.Review
 import com.example.myapplication.model.service.RestauranteService
 import com.example.myapplication.model.service.ReviewService
 import com.example.myapplication.view.restaurante.RestauranteActivity
+import com.example.myapplication.view.restaurante.fragment.VisualizarRestauranteFragment
 import com.example.myapplication.view.review.adapter.ReviewAdapter
 import com.example.myapplication.view.review.fragment.CriarReviewFragment
+import com.example.myapplication.view.review.fragment.VisualizarReviewFragment
 import com.google.android.material.navigation.NavigationView
 
 class ReviewActivity : AppCompatActivity() {
@@ -59,11 +61,11 @@ class ReviewActivity : AppCompatActivity() {
         recycler.adapter = reviewAdapter
 
         reviewAdapter.setOnItemClickListener(object : ReviewAdapter.OnItemClickListenerReview{
-            override fun editarReview(position: Int) {
-                TODO("Not yet implemented")
+            override fun visualizar(position: Int) {
+                visualizarReview(reviewList[position])
             }
 
-            override fun removerReview(position: Int) {
+            override fun remover(position: Int) {
                 dialogRemoverReview(reviewList[position].id!!)
             }
 
@@ -135,6 +137,7 @@ class ReviewActivity : AppCompatActivity() {
         }
 
     }
+
     override fun onOptionsItemSelected(item : MenuItem) : Boolean{
 
         if(toggle.onOptionsItemSelected(item)){
@@ -147,6 +150,15 @@ class ReviewActivity : AppCompatActivity() {
         val intent = Intent(this, RestauranteActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+    }
+
+    private fun visualizarReview(review: Review){
+        val visualizarFragment = VisualizarReviewFragment(this, review)
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.frame_layout_review, visualizarFragment)
+            addToBackStack(null)
+            commit()
+        }
     }
 
 }

@@ -112,7 +112,7 @@ class RestauranteActivity : AppCompatActivity() {
             }
 
             override fun visualizar(position: Int) {
-                visualizarRetaurante(restauranteList[position].id!!)
+                visualizarRetaurante(restauranteList[position])
             }
 
         })
@@ -178,10 +178,10 @@ class RestauranteActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun visualizarRetaurante(idRestaurante : Int){
-        val visualizarRestauranteFragment = VisualizarRestauranteFragment(this, idRestaurante)
+    private fun visualizarRetaurante(restaurante: Restaurante){
+        val visualizarRestauranteFragment = VisualizarRestauranteFragment(this, restaurante)
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.frame_layout_restaurante123, visualizarRestauranteFragment)
+            replace(R.id.frame_layout_restaurante, visualizarRestauranteFragment)
             addToBackStack(null)
             commit()
         }

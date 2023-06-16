@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.model.model.Review
@@ -16,8 +17,8 @@ class ReviewAdapter(var list: ArrayList<Review>): RecyclerView.Adapter<ReviewAda
     private lateinit var listener : OnItemClickListenerReview
 
     interface OnItemClickListenerReview{
-        fun editarReview(position: Int)
-        fun removerReview(position: Int)
+        fun visualizar(position: Int)
+        fun remover(position: Int)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListenerReview){
@@ -33,7 +34,8 @@ class ReviewAdapter(var list: ArrayList<Review>): RecyclerView.Adapter<ReviewAda
         holder.nome.text = if(list[position].nome == "") "Sem nome" else list[position].nome
         holder.data.text = Util().getDataHoraFromLong(list[position].data)
         holder.nota.text = list[position].nota.toString()
-        holder.localizacao.text = list[position].latitude.toString()
+        holder.restaurante.text = if(list[position].nomeRestaurante == null) "Sem restaurante" else  list[position].nomeRestaurante
+        //holder.localizacao.text = list[position].latitude.toString()
     }
 
     override fun getItemCount(): Int {
@@ -47,10 +49,15 @@ class ReviewAdapter(var list: ArrayList<Review>): RecyclerView.Adapter<ReviewAda
         var restaurante = itemView.findViewById<TextView>(R.id.txt_restaurante)
         var data = itemView.findViewById<TextView>(R.id.txt_data)
         var btnRemover = itemView.findViewById<ImageButton>(R.id.btn_remover_review)
+        val card = itemView.findViewById<CardView>(R.id.card_review)
 
         init {
             btnRemover.setOnClickListener {
-                listener.removerReview(adapterPosition)
+                listener.remover(adapterPosition)
+            }
+
+            card.setOnClickListener {
+                listener.visualizar(adapterPosition)
             }
         }
     }
